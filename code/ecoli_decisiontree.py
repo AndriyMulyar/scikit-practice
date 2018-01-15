@@ -15,7 +15,13 @@ def loadARFF(filename):
     X = df.drop(["Class"], axis=1)
     return (X,y,meta)
 
-for fold in range(1,2):
+
+folds = 5;
+
+avg_precision = 0;
+avg_recall = 0;
+
+for fold in range(1,folds+1):
     X_train, y_train, meta_train = loadARFF("../datasets/ecoli2-5.46/ecoli2-5-%stra.dat" % fold)
 
     X_test, y_test, meta_test = loadARFF("../datasets/ecoli2-5.46/ecoli2-5-%stst.dat" % fold)
@@ -30,17 +36,8 @@ for fold in range(1,2):
     recall = metrics.recall_score(y_test, y_predicted, average=None)
     matrix = metrics.confusion_matrix(y_test, y_predicted)
 
-   # dot_data = tree.export_graphviz(dtree, out_file=None);
-
-    dot_data = tree.export_graphviz(dtree, out_file=None,
-                                    feature_names=meta_train.names()[:-1],
-                                    class_names=meta_train.names()[-1],
-                                    filled=True, rounded=True,
-                                    special_characters=True)
-
-
-    graph = graphviz.Source(dot_data)
-    graph.render("iris")
+    avg_precision += precision[0];
+    avg_recall += recall[0];
 
     print("Fold %i" % fold)
     print(matrix)
@@ -48,3 +45,7 @@ for fold in range(1,2):
     print("Precision: %f" % precision[0])
     print("Recall: %f" % recall[0] ,)
 
+avg_precision /= folds
+avg_recall /= folds
+print("\nAverage Precision: %f" % (avg_precision))
+print("Average Recall: %f" % (avg_recall))
