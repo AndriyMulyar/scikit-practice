@@ -1,9 +1,8 @@
 from scipy.io import arff
-import numpy as np
 from sklearn import tree
 from sklearn import metrics
 from pandas import DataFrame
-import graphviz
+from imblearn.over_sampling import SMOTE
 """Building classifier code """
 
 
@@ -17,17 +16,27 @@ def loadARFF(filename):
 
 
 folds = 5;
-
+avg_accuracy = 0;
 avg_precision = 0;
 avg_recall = 0;
 
-for fold in range(1,folds+1):
-    X_train, y_train, meta_train = loadARFF("../datasets/ecoli2-5.46/ecoli2-5-%stra.dat" % fold)
 
-    X_test, y_test, meta_test = loadARFF("../datasets/ecoli2-5.46/ecoli2-5-%stst.dat" % fold)
+
+for fold in range(1,6):
+    X_train, y_train, meta_train = loadARFF("../datasets/ecoli3-8.6/ecoli3-5-%stra.dat" % fold)
+
+    "Sampling of training data: SMOTE"
+
+    X_train, y_train = SMOTE(ratio={1: 100}).fit_sample(X_train.values, y_train.values)
+
+
+    "End sampling"
+
+    X_test, y_test, meta_test = loadARFF("../datasets/ecoli3-8.6/ecoli3-5-%stst.dat" % fold)
+
 
     dtree = tree.DecisionTreeClassifier();
-    dtree.fit(X_train.values, y_train.values);
+    dtree.fit(X_train, y_train);
 
     y_predicted = dtree.predict(X_test)
 
@@ -38,6 +47,7 @@ for fold in range(1,folds+1):
 
     avg_precision += precision[0];
     avg_recall += recall[0];
+    avg_accuracy += accuracy;
 
     print("Fold %i" % fold)
     print(matrix)
@@ -47,5 +57,7 @@ for fold in range(1,folds+1):
 
 avg_precision /= folds
 avg_recall /= folds
+avg_accuracy /= folds
 print("\nAverage Precision: %f" % (avg_precision))
 print("Average Recall: %f" % (avg_recall))
+print("Average Accuracy: %f" % (avg_accuracy))

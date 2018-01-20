@@ -13,5 +13,5 @@ def removeUnneccessaryTags(filename):
 
 
 for i in range(1,6):
-    removeUnneccessaryTags("../datasets/ecoli2-5.46/ecoli2-5-%stra.dat" % i)
-    removeUnneccessaryTags("../datasets/ecoli2-5.46/ecoli2-5-%stst.dat" % i)
+    removeUnneccessaryTags("../datasets/ecoli3-8.6/ecoli3-5-%stra.dat" % i)
+    removeUnneccessaryTags("../datasets/ecoli3-8.6/ecoli3-5-%stst.dat" % i)
